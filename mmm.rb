@@ -24,7 +24,7 @@ class Map
 		if ARGV.index("-debug")
 			@mapfiles = [ "media/testmap.txt" ]
 		else
-			@mapfiles = [ "media/CptnRuby Map3.txt","media/CptnRuby Map2.txt","media/CptnRuby Map3.txt" ]
+			@mapfiles = [ "media/CptnRuby Map1.txt","media/CptnRuby Map2.txt","media/CptnRuby Map3.txt" ]
 		end
 		self.next_level
 	end
@@ -36,6 +36,7 @@ class Map
 		@tiles = []
 		@baddies = []
 		@baddie_shots = []
+		@boss = nil
 		lines = File.readlines(filename).map { |line| line.chomp }
 		@height = lines.size
 		@width = lines[0].size
@@ -81,7 +82,7 @@ class Map
 						@baddies.push(Mettaur.new(@window, x*50, y*50+8))
 						nil
 					when 'c'
-						@baddies.push(ChuuBosu.new(@window, x*50, y*50+25))
+						@boss = ChuuBosu.new(@window, x*50, y*50+25)
 						nil
 					when 'x'
 						@baddies.push(Bomb.new(@window, x*50+25, y*50+25))
@@ -175,6 +176,10 @@ class Map
 	
 	def add_baddie_shot(s)
 		@baddie_shots.push s
+	end
+	
+	def spawn_boss
+		@baddies.push @boss if @boss
 	end
 end
 
@@ -280,14 +285,14 @@ class GameWindow < Gosu::Window
 		#@font.draw("UI Paused", 5, 5, ZIndex::UI) if @state.at_state? GameState::UIPaused
 		#@font.draw("#{@active_Dialog}", GameConfig::Width/2, 5, ZIndex::UI)
 		text = "#{@map.gems.length} Gems remaining"
-		@font.draw("#{text}", GameConfig::Width-(text.length*10), 5, ZIndex::UI, 1.0, 1.0, 0xffffff00)
+		@font.draw("FPS: #{Gosu::fps} #{text}", GameConfig::Width-(text.length*10), 5, ZIndex::UI, 1.0, 1.0, 0xffffff00)
 	end
 	
 	def button_down(id)
 		close if id == Gosu::KbEscape
 		if id == Gosu::KbBackspace
 			#@player.warp @map.start_x, @map.start_y
-			@player.take_damage 100  #guaranteed death
+			@map.spawn_boss  #guaranteed death
 		end
 		case GameConfig.get_btn id 
 			when GameConfig::Up
@@ -330,7 +335,7 @@ class GameWindow < Gosu::Window
 				#@state.tog_state GameState::PlayerPaused
 				else
 					@state.add_state GameState::UIPaused
-					@Menu.open
+					@Menu.open @elf.color
 				end
 		end	
 	end
@@ -427,7 +432,13 @@ class GameWindow < Gosu::Window
 		@events['Start_of_level_3_text'] = GameEvent.new
 		@events['Start_of_level_3_text'].addTrigger { @player.state == PlayerState::Standing }	 
 		@events['Start_of_level_3_text'].addAction { @state.add_state GameState::UIPaused; 
-													 @active_Dialog = Dialogs::PopupBox.new(self,53+@camera_x,3+@camera_y,Dialogs::MissionThreeLoopText,faces[:Ciel]); }
+													 @active_Dialog = Dialogs::PopupBox.new(self,53+@camera_x,3+@camera_y,Dialogs::MissionThreeLoopText,faces[:Ciel]); 
+													 @active_events.push @events['Spawn_end_boss'];
+												   }
+		
+		@events['Spawn_end_boss'] = GameEvent.new
+		@events['Spawn_end_boss'].addTrigger { @map.gems.length == 0 }
+		@events['Spawn_end_boss'].addAction { @map.spawn_boss }
 		
 		
 	end

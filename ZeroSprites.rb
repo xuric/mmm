@@ -246,6 +246,7 @@ class Player
 		#death animation here
 		@state.rm_state PlayerState::HitStun
 		@state.rm_state PlayerState::Invincible
+		self.image_update
 		@state.add_state PlayerState::Dead
 		#self.poofout
 	end

@@ -130,7 +130,7 @@ class DeathExplosion
 		@@dist[@@count] = 0
 		@@speed[@@count] = 0.25
 		@@count += 1
-		puts "New explosion: dist = #{@@dist[@@count - 1]} speed = #{@@speed[@@count - 1]}, total: #{@@count}"
+		#puts "New explosion: dist = #{@@dist[@@count - 1]} speed = #{@@speed[@@count - 1]}, total: #{@@count}"
 	end
 	
 	def update

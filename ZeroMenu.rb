@@ -191,7 +191,7 @@ class Selector
 			}
 		end
 		if @sparkles.length < 4 and rand(100) < 15
-			@sparkles.push({:x=>x+7+rand(@selector[0].width),:y=>y+@selector[0].height,:oy=>0,:s=>rand(@sparkle.length)})
+			@sparkles.push({:x=>x+rand(@selector[0].width),:y=>y+@selector[0].height,:oy=>0,:s=>rand(@sparkle.length)})
 		end
 		
 		@selector[Gosu::milliseconds/160 % @selector.size].draw(x,y,ZIndex::UI,1.0,1.0,color)
@@ -256,33 +256,37 @@ class Menu
 	end
 	
 	def next
-		self.move_selector 1
+		@selected_index = (@selected_index + 1) % @options.length
+		self.move_selector
 	end
 	
 	def prev
-		self.move_selector -1
+		@selected_index = (@selected_index - 1) % @options.length
+		self.move_selector
 	end
 
-	def move_selector(offs)
-		@selected_index = (@selected_index+offs) % @options.size
+	def set_active(item)
+		idx = @opt_names.index(item)
+		return unless idx
+		#move_selector(@selected_index + idx)
+		@selected_index = idx
+		move_selector
+	end
+	
+	def move_selector
+		#@selected_index = (@selected_index+offs) % @options.size
 		y = 0
 		0.upto(@selected_index) { |i| y += @options[i].height }
 		@@selector.moveto(@x+7,@y+y)
 	end
-	
 	
 	def fadein
 		@fade = :in
 		@op += @fade_speed
 		@stop = 255
 		@active = true
-		@lastloc.push @@selector.getloc
-		begin
-			#was .setloc
-			@@selector.moveto(@x+7,@y+(27*(@selected_index+1)))
-		rescue TypeError => e
-			puts "#{e.message}"
-		end
+		#@lastloc.push @@selector.getloc
+		#move_selector(@selected_index+1)
 	end
 	
 	def fadeout
@@ -295,7 +299,7 @@ class Menu
 		@op = 0
 		@scale = 0.0
 		@@selector.reset
-		@@selector.moveto(*@lastloc.pop) if @lastloc.length > 0
+		#@@selector.moveto(*@lastloc.pop) if @lastloc.length > 0
 	end
 		
 	def reset
@@ -444,12 +448,12 @@ class MenuHandler
 		@active_ui.next	
 	end
 	
-	def open
+	def open(current = :Red)
 		return if @active_ui
 		idx = :Main
 		idx = @menus.keys[0] unless @menus.keys.index(:Main)
 		@active_ui = @menus[idx]
-		#puts "activated #{@active_ui}"
+		@active_ui.set_active current
 		@active_ui.fadein
 	end
 	

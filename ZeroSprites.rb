@@ -113,7 +113,7 @@ class Breakable
 	def initialize(window, start_x, start_y)
 		@parent = window
 		@img = Sprite.new(window,"media/CptnRuby Gem.png", -1, -1, 1)
-		@dummy = Gosu::Image.new(window,"media/earth.png", true)
+		@dummy = Gosu::Image.new(window,"media/Earth.png", true)
 		@hp = 1
 		@x = start_x
 		@y = start_y
@@ -732,7 +732,7 @@ class Bomb < Breakable
 		        Gosu::Image.new(win,base,false,24,0,20,20),
 		        Gosu::Image.new(win,base,false,48,0,20,20),
 		        Gosu::Image.new(win,base,false,73,0,20,20)]
-		@dummy = Gosu::Image.new(win,"media/earth.png", true)
+		@dummy = Gosu::Image.new(win,"media/Earth.png", true)
 		@x,@y = x,y
 		@height,@width = @img[0].height,@img[0].width
 		@fps = 250

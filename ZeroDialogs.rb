@@ -1,6 +1,7 @@
-﻿class Mugshots
+class Mugshots
 	def initialize(win)
-		@sheet = Gosu::Image::load_tiles(win,"sprites/mmzmugs.gif",-6,-3,true)
+		puts "looking for file: sprites/mmzmugs.gif: #{File.exist?('sprites/mmzmugs.png')}"
+		@sheet = Gosu::Image::load_tiles(win,"sprites/mmzmugs.png",-6,-3, true)
 	end
 	
 	def [](who)
@@ -98,19 +99,19 @@ module Dialogs
 	end
 	
 	#predefine the important dialogs
-	if ARGV.index("-jp")
-		MissionOneStartText = "ここは？　　　　　　　　　　　　　　　シエロ、返事して。転送してくれ。　　　　シエロ？　　　　　　　　　　　　　　　　　　　　反応なし。自分で逃げないと"	
-		MissionOneCompleteText = "それは最後。これで逃げるはず"
-		MissionTwoStartText = "また妙な空間。くだらない"
-		MissionTwoCompleteText = "。。。"
-		MissionThreeLoopText = "。。。面倒臭い"
-	else
+#	if ARGV.index("-jp")
+#		MissionOneStartText = "ここは？　　　　　　　　　　　　　　　シエロ、返事して。転送してくれ。　　　　シエロ？　　　　　　　　　　　　　　　　　　　　反応なし。自分で逃げないと"	
+#		MissionOneCompleteText = "それは最後。これで逃げるはず"
+#		MissionTwoStartText = "また妙な空間。くだらない"
+#		MissionTwoCompleteText = "。。。"
+#		MissionThreeLoopText = "。。。面倒臭い"
+#	else
 		MissionOneStartText = "...Where am I?                       Base, come in. Transfer me out...  Base?                              No response. I'll have to find my own way out.                           Can't transfer out on my own. Maybe these crystals are of some use...";
 		MissionOneCompleteText = "That's the last of them. With this I should be able to get out of here."
 		MissionTwoStartText = "Another strange realm. This is ridiculous."
 		MissionTwoCompleteText = "Please let this work..."
 		MissionThreeLoopText = "Oh bother."
-	end
+#	end
 end
 
 class DeathExplosion
